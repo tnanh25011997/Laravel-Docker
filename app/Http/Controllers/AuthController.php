@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use http\Cookie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -14,14 +15,26 @@ class AuthController extends Controller
         if(Auth::attempt($request->only('email','password'))){
             $user = Auth::user();
             $token = $user->createToken('admin')->accessToken;
-            return [
+
+            $cookie = \cookie('jwt', $token, 3600);
+
+            return \response([
                 'token'=>$token,
-            ];
+            ])->withCookie($cookie);
         }
         return response([
             'error'=> 'Invalid Credentials'
         ], Response::HTTP_UNAUTHORIZED);
     }
+
+    public function logout()
+    {
+        $cookie = \Cookie::forget('jwt');
+        return response([
+            'Message'=> 'Logout Success'
+        ])->withCookie($cookie);
+    }
+
     public function register(Request $request){
         $user = User::create([
             'first_name' => $request->input('first_name'),

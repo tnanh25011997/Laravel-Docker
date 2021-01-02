@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends Controller
 {
     public function index(){
+
+        \Gate::authorize('view','users');
+
         $user = User::paginate();
         //for collection
         return UserResource::collection($user);
@@ -25,6 +28,9 @@ class UserController extends Controller
     }
 
     public function store(UserRequest $request){
+
+        \Gate::authorize('edit','users');
+
         $user = User::create([
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
@@ -37,6 +43,7 @@ class UserController extends Controller
     }
 
     public function update(Request $request, $id){
+        \Gate::authorize('edit','users');
         $user = User::find($id);
         $user->update([
             'first_name' => $request->input('first_name'),
@@ -49,6 +56,7 @@ class UserController extends Controller
     }
 
     public function destroy($id){
+        \Gate::authorize('edit','users');
         User::destroy($id);
         return response(null, Response::HTTP_NO_CONTENT);
     }
