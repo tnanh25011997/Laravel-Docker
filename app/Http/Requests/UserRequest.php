@@ -4,8 +4,22 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     title="Store User Request",
+ *     description="Store User Request body data",
+ * )
+ */
 class UserRequest extends FormRequest
 {
+    /**
+     * @OA\Property(
+     *     title="first_name"
+     * )
+     *
+     * @var string
+     */
+    public $first_name;
     /**
      * Determine if the user is authorized to make this request.
      *

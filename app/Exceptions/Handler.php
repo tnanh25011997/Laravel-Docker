@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -55,4 +56,13 @@ class Handler extends ExceptionHandler
 
         ], $exception->getCode()? $exception->getCode() : 400);
     }
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if($request->is('api/*'))
+        {
+            return Helper::sendResponse(false, 'Error.', 401, 'Unauthorized.');
+        }
+
+    }
+
 }

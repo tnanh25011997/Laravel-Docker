@@ -12,6 +12,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/users",
+     *     security={{"bearerAuth":{}}},
+     *     tags={"Users"},
+     *     @OA\Response(response="200",
+     *      description="User Collection.",
+     *     ),
+     *     @OA\Parameter(
+     *      name="page",
+     *      description="Pagination page",
+     *      in="query",
+     *      @OA\Schema (
+     *          type="integer"
+     *      )
+     *     )
+     * )
+     */
     public function index(){
 
         \Gate::authorize('view','users');
@@ -21,12 +39,46 @@ class UserController extends Controller
         return UserResource::collection($user);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/users/{id}",
+     *     security={{"bearerAuth":{}}},
+     *     tags={"Users"},
+     *     @OA\Response(response="200",
+     *      description="User.",
+     *     ),
+     *     @OA\Parameter(
+     *      name="id",
+     *      description="User ID",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema (
+     *          type="integer"
+     *      )
+     *     )
+     * )
+     */
+
     public function show($id){
         $user = User::find($id);
         //for 1 element
         return new UserResource($user);
     }
 
+    /**
+     * @OA\Post (
+     *     path="/users",
+     *     security={{"bearerAuth":{}}},
+     *     tags={"Users"},
+     *     @OA\Response(response="200",
+     *      description="User",
+     *     ),
+     *     @OA\RequestBody(
+     *      required=true,
+     *      @OA\JsonContent(ref="#/components/schemas/UserRequest")
+     *     )
+     * )
+     */
     public function store(UserRequest $request){
 
         \Gate::authorize('edit','users');
